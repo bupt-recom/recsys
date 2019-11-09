@@ -1,0 +1,10 @@
+These are the code of all baselines as follow:
+1. NCF
+2. BPR
+3. NMF
+4. POP
+5. SLIM
+6. CDAE
+7. VAEs
+8. ItemKNN
+9. DSSM
