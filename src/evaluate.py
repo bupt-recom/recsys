@@ -1,5 +1,5 @@
 #coding:utf-8
-from sklearn.metrics import roc_auc_score
+from sklearn.metrics import roc_auc_score, f1_score
 import numpy as np
 import math
 
@@ -52,3 +52,40 @@ class Metric(object):
                 k_pos +=1
         return k_pos, total_pos
 
+    def precision(self, probs, targets, k = 10):
+        prob_tag = zip(probs, targets)
+        ranklist = sorted(prob_tag, key=lambda x: x[0], reverse=True)[:k]
+        k_pos = 0
+        for p, t in ranklist:
+            if t == 1:
+                k_pos += 1
+        return k_pos / k
+
+
+    def recall(self, probs, targets, k = 10):
+        total_pos = targets.count(1)
+        prob_tag = zip(probs, targets)
+        ranklist = sorted(prob_tag, key=lambda x: x[0], reverse=True)[:k]
+        k_pos = 0
+        for p, t in ranklist:
+            if t == 1:
+                k_pos += 1
+        return k_pos / total_pos
+
+    def f1(self, probs, targets, threshold = 0.5):
+        pre = (np.array(probs) >= threshold).astype(int)
+        tar = np.array(targets)
+        return f1_score(tar, pre)
+
+    def accuracy(self, probs, targets, threshold = 0.5):
+        pre = (np.array(probs) >= threshold).astype(int)
+        tar = np.array(targets)
+        return np.sum((pre == tar).astype(int)) / pre.size
+
+    def mrr(self, probs, targets):
+        prob_tag = zip(probs, targets)
+        ranklist = sorted(prob_tag, key=lambda x: x[0], reverse=True)
+        for idx,(prob, tag) in enumerate(ranklist):
+            if tag == 1.0:
+                return 1.0 / (idx + 1)
+        return 0
