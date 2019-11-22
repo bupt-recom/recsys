@@ -40,7 +40,7 @@ class Metric(object):
             if tag == 1.0:
                 pos += 1.
                 AP += pos/(idx+1)
-        return AP
+        return AP / pos
 
     def hr(self, probs, targets, k = 10):
         total_pos = targets.count(1)
@@ -58,7 +58,7 @@ class Metric(object):
         k_pos = 0
         for p, t in ranklist:
             if t == 1:
-                k_pos += 1
+                k_pos += 1.
         return k_pos / k
 
 
@@ -69,7 +69,7 @@ class Metric(object):
         k_pos = 0
         for p, t in ranklist:
             if t == 1:
-                k_pos += 1
+                k_pos += 1.
         return k_pos / total_pos
 
     def f1(self, probs, targets, threshold = 0.5):
@@ -80,7 +80,7 @@ class Metric(object):
     def accuracy(self, probs, targets, threshold = 0.5):
         pre = (np.array(probs) >= threshold).astype(int)
         tar = np.array(targets)
-        return np.sum((pre == tar).astype(int)) / pre.size
+        return np.sum((pre == tar).astype(float)) / pre.size
 
     def mrr(self, probs, targets):
         prob_tag = zip(probs, targets)
